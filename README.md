@@ -1,18 +1,30 @@
-# 🚦 TrafficGuard AI: Next-Gen Traffic Intelligence
+# TrafficGuard AI
+### Enterprise Traffic Analytics & Violation Detection System
 
-![Python](https://img.shields.io/badge/Python-3.11%2B-blue?style=for-the-badge&logo=python&logoColor=white)
-![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Python](https://img.shields.io/badge/Python-3.11%2B-0052cc?style=for-the-badge&logo=python&logoColor=white)
+![React](https://img.shields.io/badge/React-18.2-20232a?style=for-the-badge&logo=react&logoColor=61dafb)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.95-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![YOLOv8](https://img.shields.io/badge/YOLOv8-State%20of%20the%20Art-FF6F00?style=for-the-badge)
+![YOLOv8](https://img.shields.io/badge/YOLOv8-Computer%20Vision-FF6F00?style=for-the-badge)
 ![Cloudinary](https://img.shields.io/badge/Cloud-Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
 
-> **TrafficGuard AI** is an enterprise-grade traffic monitoring system that harnesses the power of Deep Learning to detect Wrong-Way driving violations in real-time. It provides instant alerts, cloud-backed evidence storage, and professional forensic reporting.
+TrafficGuard AI is a production-grade traffic intelligence system capable of real-time vehicle tracking, flow analysis, and automated violation detection. Leveraging the YOLOv8 deep learning architecture and ByteTrack algorithm, it delivers forensic precision in identifying wrong-way driving incidents and traffic anomalies.
 
 ---
 
-## 🏗️ Architecture & Workflow
+## Table of Contents
 
-This system utilizes a **Reactive Hybrid Architecture**, combining a high-performance Python inference engine with a responsive React dashboard.
+- [System Architecture](#system-architecture)
+- [Core Capabilities](#core-capabilities)
+- [Technical Stack](#technical-stack)
+- [Project Navigation](#project-navigation)
+- [Installation and Deployment](#installation-and-deployment)
+- [Security and Compliance](#security-and-compliance)
+
+---
+
+## System Architecture
+
+The solution implements a reactive hybrid architecture. Video streams are processed by an asynchronous Python inference engine which streams telemetry via WebSockets to a React-based visual dashboard.
 
 ```mermaid
 graph TD
@@ -24,134 +36,136 @@ graph TD
     subgraph Server [Backend Engine]
         API[FastAPI Server]
         CV[OpenCV Pipeline]
-        YOLO[YOLOv8 Model]
-        Logic[Violation Logic]
+        YOLO[YOLOv8 Inference]
+        Logic[Violation Analytics]
     end
 
-    subgraph Service [Cloud & Storage]
+    subgraph Service [Cloud Infrastructure]
         Cloud[Cloudinary Storage]
     end
 
-    User([Admin]) -->|Uploads Video| UI
+    User([Admin]) -->|Input Stream| UI
     UI -->|HTTP POST| API
     
-    API -->|Frame Stream| CV
-    CV -->|Detect Objects| YOLO
-    YOLO -->|Compute Trajectory| Logic
+    API -->|Frame Buffer| CV
+    CV -->|Object Detection| YOLO
+    YOLO -->|Trajectory Tracking| Logic
     
-    Logic -->|Real-time Overlay| WS_Client
-    WS_Client -->|Live Feed| UI
+    Logic -->|Telemetry Stream| WS_Client
+    WS_Client -->|Live Visualization| UI
     
-    Logic -->|Async Upload| Cloud
-    Cloud -->|Secure URL| UI
+    Logic -->|Evidence Upload| Cloud
+    Cloud -->|Secure Playback URL| UI
 ```
 
 ---
 
-## ✨ Key Features
+## Core Capabilities
 
-### 🧠 Core Intelligence
-*   **YOLOv8 Nano/Small**: Optimized for speed, running real-time detection on standard hardware.
-*   **ByteTrack Algorithm**: Robust vehicle tracking that maintains ID across occlusions.
-*   **Dynamic Flow Analysis**: Automatically determines traffic direction or accepts manual overrides.
+### AI Intelligence Engine
+The system employs **Ultralytics YOLOv8** (Nano/Small variants) for high-frequency object detection, coupled with the **ByteTrack** algorithm. This combination allows for:
+-   **Robust Tracking:** Maintains vehicle IDs across temporary occlusions.
+-   **Multi-Class Detection:** Distinguishes between Cars, Trucks, Buses, and Motorcycles.
+-   **Velocity Estimation:** Calculates relative speed and directional vectors.
 
-### 🛡️ Violation Detection
-*   **Wrong-Way Alerts**: Instantly flags vehicles moving against the flow.
-*   **Smart Seek**: "View Clip" buttons instantly jump to the exact second a violation occurred.
-*   **Evidence Locking**: Snapshots and video clips are preserved for audit.
+### Violation Detection System
+Automated logic monitors vehicle vectors against defined lane protocols.
+-   **Instant Alerting:** Identifies wrong-way drivers within milliseconds of infraction.
+-   **Evidence Preservation:** Automatically captures video clips and timestamps of violations.
+-   **Cloud Integration:** Asynchronously uploads processed evidence to Cloudinary for permanent, secure storage.
 
-### ☁️ Enterprise Cloud Capability
-*   **Cloudinary Integration**:
-    *   Automatic async upload of processed sessions.
-    *   No local storage limits â€“ evidence is safely stored in the cloud.
-    *   Secure, signed URLs for video playback.
-
-### 📊 Forensic Reporting
-*   **Live Dashboard**: Real-time counter for Total Vehicles, Wrong-Way Incidents, and Average Speed.
-*   **CSV Export**: Download legally-compliant detailed logs including timestamps and vehicle IDs.
-*   **Responsive UI**: Modern Material-UI (MUI) design ensuring usability on all devices.
+### Forensic Reporting
+-   **Real-time Metrics:** Displays traffic volume, turnover rates, and violation statistics live.
+-   **CSV Export:** Generates legally compliant data logs containing precise timestamps, vehicle IDs, and class types.
+-   **Visual Evidence:** "Smart Seek" functionality allows operators to instantly review specific violation events.
 
 ---
 
-## 📂 Project Structure
+## Technical Stack
 
-A guide to the codebase to help you navigate:
-
-| Folder | Status | Description |
+| Component | Technology | Role |
 | :--- | :--- | :--- |
-| `backend/` | **Core** | Contains all Python logic, API, and AI processing. |
-| `frontend/` | **Core** | React application, UI components, and Dashboard logic. |
-| `backend/uploads/` | *Temp* | Temporary storage for raw video uploads (safe to clear). |
-| `backend/processed_videos/` | *Temp* | Temporary storage for processed videos before Cloud upload. |
-| `backend/generated_violations/` | *Temp* | Temporary folder for violation snapshots. |
-| `backend/__pycache__/` | *Ignored* | Python compiled files (do not commit). |
-| `frontend/node_modules/` | *Ignored* | NPM dependencies (do not commit). |
-
-> **Note on `postcss.config.js`**: This file configures **PostCSS**, a tool used by Tailwind CSS and Vite to process CSS. It adds vendor prefixes (like `-webkit-`) automatically, ensuring your styles work on all browsers. **Do not delete it.**
+| **Backend Core** | Python 3.11+, FastAPI | API Handling and Async Task Management |
+| **Computer Vision** | OpenCV, Ultralytics YOLOv8 | Image Processing and Neural Network Inference |
+| **Frontend Framework** | React 18, Vite | Reactive User Interface |
+| **State Management** | React Hooks | Real-time Data Handling |
+| **UI Library** | Material-UI (MUI) V5 | Enterprise Design System |
+| **Cloud Storage** | Cloudinary SDK | Scalable Media Storage |
 
 ---
 
-## 🚀 Installation & Setup
+## Project Navigation
+
+| Directory | Type | Description |
+| :--- | :--- | :--- |
+| `backend/` | **Source** | Contains API server, inference logic, and cloud handlers. |
+| `frontend/` | **Source** | Contains React application, components, and assets. |
+| `backend/uploads/` | *Temporary* | buffer for incoming video streams (auto-cleared). |
+| `backend/processed/` | *Temporary* | Output buffer for rendered videos before upload. |
+| `backend/violations/` | *Temporary* | Snapshot storage for immediate UI feedback. |
+
+> **Note:** The `postcss.config.js` file in the frontend directory is critical for CSS cross-browser compatibility. It ensures styles render correctly across different rendering engines.
+
+---
+
+## Installation and Deployment
 
 ### Prerequisites
-*   **Python 3.10+** (Required for Ultralytics)
-*   **Node.js 18+**
+-   **Python 3.10** or higher
+-   **Node.js 18** or higher / NPM
 
-### 1. Backend Setup
-```bash
-cd backend
+### Backend Configuration
 
-# Create Virtual Environment (Optional but Recommended)
-python -m venv venv
-# Windows: venv\Scripts\activate
-# Mac/Linux: source venv/bin/activate
+1.  Navigate to the backend directory:
+    ```bash
+    cd backend
+    ```
 
-# Install Dependencies
-pip install -r requirements.txt
+2.  Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-# Configure Environment
-# Create a .env file with your Cloudinary Credentials:
-# CLOUDINARY_CLOUD_NAME=...
-# CLOUDINARY_API_KEY=...
-# CLOUDINARY_API_SECRET=...
+3.  Configure Environment Variables:
+    Create a `.env` file in the `backend/` root with the following credentials:
+    ```env
+    CLOUDINARY_CLOUD_NAME=your_cloud_name
+    CLOUDINARY_API_KEY=your_api_key
+    CLOUDINARY_API_SECRET=your_api_secret
+    ```
 
-# Run Server
-python main.py
-```
-*Server runs at `http://127.0.0.1:8000`*
+4.  Start the Inference Server:
+    ```bash
+    python main.py
+    ```
 
-### 2. Frontend Setup
-```bash
-cd frontend
+### Frontend Configuration
 
-# Install Dependencies
-npm install
+1.  Navigate to the frontend directory:
+    ```bash
+    cd frontend
+    ```
 
-# Start Dev Server
-npm run dev
-```
-*Dashboard runs at `http://localhost:5173`*
+2.  Install Node modules:
+    ```bash
+    npm install
+    ```
 
----
-
-## 🛡️ Security Note for GitHub
-This repository is configured with a `.gitignore` file to **prevent** uploading:
-*   ❌ Your API Keys (`.env`)
-*   ❌ Large Video Files (`uploads/`, `*.mp4`)
-*   ❌ System Folders (`__pycache__`, `node_modules`)
-
-**You are safe to push this code to GitHub.**
+3.  Launch the Dashboard:
+    ```bash
+    npm run dev
+    ```
 
 ---
 
-## 🤝 Contribution
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
+## Security and Compliance
+
+This repository employs strict security configurations to ensure data integrity and credential safety.
+
+> [!IMPORTANT]
+> **Data Safety:** The `.gitignore` configuration explicitly excludes sensitive files such as `.env` and large media directories (`uploads/`, `processed_videos/`) from version control. This prevents accidental exposure of API keys and manages repository size.
 
 ---
 
-### © 2025 TrafficGuard AI
-*Ensuring Safer Roads Through Intelligence.*
+### Copyright
+&copy; 2025 TrafficGuard AI. All Rights Reserved.
