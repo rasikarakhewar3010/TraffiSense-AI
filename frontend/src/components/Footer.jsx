@@ -15,7 +15,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { motion } from 'framer-motion';
 
 const Footer = () => {
-    const currentYear = new Date().getFullYear();
 
     const footerLinks = {
         product: [
@@ -197,7 +196,7 @@ const Footer = () => {
                     }}
                 >
                     <Typography variant="body2" color="text.secondary">
-                        © {currentYear} TrafficGuard AI. All rights reserved.
+                        © 2025 TrafficGuard AI. All rights reserved.
                     </Typography>
 
                 </Box>
